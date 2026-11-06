@@ -4,6 +4,42 @@ Predict `RainTomorrow` from Australian weather data. FastAPI behind Nginx (TLS,
 basic auth), MLflow tracking + registry, DVC for dataset blobs, Airflow for
 scheduled retraining. Code in Git, data in Supabase Storage, lineage in Postgres.
 
+## About this repository
+
+This is my copy of a team project from the Liora / DataScientest MLOps course,
+built by a team of four. The original repository is
+[DataScientest-Studio/jul26_bmlops_int_weather](https://github.com/DataScientest-Studio/jul26_bmlops_int_weather).
+The commit history is preserved, so every commit still shows its original author.
+
+**What I worked on:**
+
+- **Inference API (FastAPI):** the `/predict`, `/predict/live_data` and `/train`
+  endpoints, input validation and response models.
+- **Orchestration (Airflow):** the first version of the pipeline DAG with Docker
+  tasks, the schedule, and catching up on missed days. Each run now fetches the
+  weather for its own date.
+- **Monitoring (Prometheus + Grafana):** the `/metrics` endpoint, custom model
+  metrics, dashboards and alerts stored as code, and a Grafana webhook that
+  starts a DAG in Airflow.
+- **Prediction outcomes:** a fix to the job that adds the real weather to past
+  predictions. It now updates only pending predictions instead of sending one
+  database request per weather row.
+
+My teammates built other parts of the project, including the data pipeline, model
+tracking and registry, the Nginx gateway, Vault integration, CI/CD and Evidently
+drift detection. The split into a daily monitoring DAG and a separate retraining
+DAG also came from a teammate.
+
+**You can't run this project as it is.** The commands below need access to the
+team's Supabase project, which is not included in this repository:
+
+- `.env` needs a Supabase URL and key.
+- API credentials and S3 keys are loaded from Supabase Vault.
+- Datasets and models are stored with DVC in the team's Supabase Storage.
+
+To run it yourself, you would need your own Supabase project with the same schema
+and secrets, plus your own copy of the data.
+
 > **Full docs live in the [wiki](https://github.com/DataScientest-Studio/jul26_bmlops_int_weather/wiki).**
 > This README only covers what you need to clone, configure, and bring the app up.
 > For architecture, the API contract, data flow, model registry, the dataset
